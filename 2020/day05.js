@@ -7,9 +7,12 @@ const ROWS_COLS_REGEX = /^([BF]{7})([RL]{3})$/;
 const findPos = (bounds, section) => {
   const [min, max] = bounds;
   const split = (max - min) / 2;
-  const nextBound = max - (section === 'F' || section === 'L' ? Math.ceil(split) : Math.floor(split));
 
-  return section === 'F' || section === 'L' ? [min, nextBound] : [nextBound, max];
+  if (section === 'F' || section === 'L') {
+    return [min, max - Math.ceil(split)];
+  }
+
+  return [max - Math.floor(split), max];
 }
 
 function calculateSeatId(row) {
