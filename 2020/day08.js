@@ -6,55 +6,46 @@ const parseInput = input => input.split('\n');
 
 const INSTRUCTION_REGEX = /^(acc|jmp|nop) (.+)$/;
 
-function partOne(input) {
-  const instructions = parseInput(input);
+const corruptedOpsMap = {
+  'nop': 'jmp',
+  'jmp': 'nop',
+  'acc': 'acc'
+};
+
+function getAcc({ instructions, corruptedOpIndex, returnAccValueBeforeLoop }) {
   const history = new Set();
   let acc = 0;
 
   for (let i = 0; i < instructions.length; i++) {
-    const [_, action, value] = instructions[i].match(INSTRUCTION_REGEX);
-
-    if (history.has(i)) break;
+    if (history.has(i)) return returnAccValueBeforeLoop ? acc : null;
 
     history.add(i);
 
-    if (action !== 'nop') action === 'acc' ? acc += parseInt(value) : i += parseInt(value) - 1;
+    const [_, op, value] = instructions[i].match(INSTRUCTION_REGEX);
+    const updatedOp = i === corruptedOpIndex ? corruptedOpsMap[op] : op;
+
+    if (updatedOp !== 'nop') updatedOp === 'acc' ? acc += parseInt(value) : i += parseInt(value) - 1;
   }
 
   return acc;
 }
 
+function partOne(input) {
+  const instructions = parseInput(input);
+
+  return getAcc({ instructions, returnAccValueBeforeLoop: true });
+}
+
 function partTwo(input) {
   const instructions = parseInput(input);
-  const actionsMap = {
-    'nop': 'jmp',
-    'jmp': 'nop',
-    'acc': 'acc'
-  };
 
-  const r = (x) => {
-    const history = new Set();
-    let acc = 0;
-    let infinite = false;
+  const getFixedAcc = (corruptedOpIndex) => {
+    const acc = getAcc({ instructions, corruptedOpIndex });
 
-    for (let i = 0; i < instructions.length; i++) {
-      const [_, action, value] = instructions[i].match(INSTRUCTION_REGEX);
-      const updatedAction = i === x ? actionsMap[action] : action;
-
-      if (history.has(i)) {
-        infinite = true;
-        break;
-      };
-
-      history.add(i);
-
-      if (updatedAction !== 'nop') updatedAction === 'acc' ? acc += parseInt(value) : i += parseInt(value) - 1;
-    }
-
-    return infinite ? r(x + 1) : acc;
+    return acc ? acc : getFixedAcc(corruptedOpIndex + 1);
   }
 
-  return r(0);
+  return getFixedAcc(0);
 }
 
 console.log(`Part one answer: ${partOne(input)}`);
