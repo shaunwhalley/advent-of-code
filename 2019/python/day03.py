@@ -9,8 +9,9 @@ def get_wire_coords(wire):
             yield tuple(coords)
 
 
-with open('inputs/day03.txt') as i:
-    wires = [list(get_wire_coords(wire)) for wire in i.read().splitlines()]
+with open('inputs/day03.txt') as input:
+    wires = [list(get_wire_coords(wire))
+             for wire in (line.strip() for line in input)]
 
 intersections = set(wires[0]).intersection(set(wires[1]))
 
