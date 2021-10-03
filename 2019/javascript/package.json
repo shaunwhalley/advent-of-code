@@ -1,0 +1,15 @@
+{
+  "name": "advent-of-code-2019-javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "day01.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.4.1"
+  }
+}
