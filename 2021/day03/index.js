@@ -1,34 +1,39 @@
 const readInput = require('../readInput')
 
-const nums = readInput(__dirname).split('\n')
+const lines = readInput(__dirname, true).split('\n')
 
 const partOne = () => {
-  const oneTotals = nums.reduce((totals, num) => {
-    num.split('').forEach((digit, idx) => (totals[idx] = (totals[idx] || 0) + Number(digit)))
-    return totals
-  }, [])
+  const [gammaBits, epsilonBits] =
+    lines
+      .reduce((totals, line) => {
+        line.split('').forEach((digit, idx) => totals[idx] = (totals[idx] || 0) + (Number(digit)))
+        return totals
+      }, [])
+      .reduce((bits, total) => {
+        total > (lines.length / 2) ? bits[0].push(1) && bits[1].push(0) : bits[0].push(0) && bits[1].push(1)
+        return bits
+      }, [[], []])
 
-  const gammaRateBits = oneTotals.map(total => total > (nums.length / 2) ? 1 : 0)
-  const gammaRate = parseInt((gammaRateBits.join('')), 2)
-  const epsilonRate = parseInt(gammaRateBits.map(bit => bit === 0 ? 1 : 0).join(''), 2)
+  const gammaRate = parseInt((gammaBits.join('')), 2)
+  const epsilonRate = parseInt((epsilonBits.join('')), 2)
 
   return gammaRate * epsilonRate
 }
 
 const partTwo = () => {
-  const oxygenBitFilter = (total, nums) => total >= (nums.length / 2) ? 1 : 0
-  const c02BitFilter = (total, nums) => total < (nums.length / 2) ? 1 : 0
+  const oxygenBitFilter = (lines, bitTotal) => bitTotal >= (lines.length / 2) ? 1 : 0
+  const c02BitFilter = (lines, bitTotal) => bitTotal < (lines.length / 2) ? 1 : 0
 
-  const findRating = (nums, filter, idx = 0) => {
-    const oneTotal = nums.reduce((totals, num) => totals + Number(num.split('')[idx]), 0)
-    const bitFilter = filter(oneTotal, nums)
-    const filteredNums = nums.filter(num => Number(num.split('')[idx]) === bitFilter)
+  const findRating = (lines, filter, idx = 0) => {
+    const bitTotal = lines.reduce((totals, line) => totals + Number(line.split('')[idx]), 0)
+    const bit = filter(lines, bitTotal)
+    const filteredLines = lines.filter(line => Number(line.split('')[idx]) === bit)
 
-    return filteredNums.length === 1 ? parseInt(filteredNums[0], 2) : findRating(filteredNums, filter, idx + 1)
+    return filteredLines.length === 1 ? parseInt(filteredLines[0], 2) : findRating(filteredLines, filter, idx + 1)
   }
 
-  const oxygenRating = findRating(nums, oxygenBitFilter)
-  const c02Rating = findRating(nums, c02BitFilter)
+  const oxygenRating = findRating(lines, oxygenBitFilter)
+  const c02Rating = findRating(lines, c02BitFilter)
 
   return oxygenRating * c02Rating
 }
