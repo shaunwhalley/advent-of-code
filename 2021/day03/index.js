@@ -1,6 +1,6 @@
 const readInput = require('../readInput')
 
-const lines = readInput(__dirname, true).split('\n')
+const lines = readInput(__dirname).split('\n')
 
 const partOne = () => {
   const [gammaBits, epsilonBits] =
