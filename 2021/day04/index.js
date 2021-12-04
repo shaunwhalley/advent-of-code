@@ -14,6 +14,7 @@ const answer = (nthBoard) => {
         return Object.values(board).some(total => {
           if (total === 5 && !winningIdxs.find(([boardIdx]) => boardIdx === boardStateIdx)) {
             winningIdxs.push([boardStateIdx, nIdx - 1])
+            return true
           }
         })
       })
