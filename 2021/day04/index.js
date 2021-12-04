@@ -6,21 +6,19 @@ const boards = input.slice(1, input.length).map(board => board.split('\n').join(
 
 const answer = (nthBoard) => {
   const boardState = []
-  const winningBoardsIdxs = []
-  let winningNumberIdx
+  const winningIdxs = []
 
   calledNumbers.some((calledNum, nIdx) => {
     if (nIdx >= 4) {
       boardState.forEach((board, boardStateIdx) => {
         return Object.values(board).some(total => {
-          if (total === 5 && !winningBoardsIdxs.includes(boardStateIdx)) {
-            winningNumberIdx = nIdx - 1
-            winningBoardsIdxs.push(boardStateIdx)
+          if (total === 5 && !winningIdxs.find(([boardIdx]) => boardIdx === boardStateIdx)) {
+            winningIdxs.push([boardStateIdx, nIdx - 1])
           }
         })
       })
 
-      if (winningBoardsIdxs.length === nthBoard) return true
+      if (winningIdxs.length === nthBoard) return true
     }
 
     boards.forEach((board, boardIdx) => {
@@ -35,8 +33,10 @@ const answer = (nthBoard) => {
     })
   })
 
+
+  const [winningBoardIdx, winningNumberIdx] = winningIdxs[winningIdxs.length - 1]
+  const winningBoard = boards[winningBoardIdx]
   const winningNumbers = calledNumbers.slice(0, winningNumberIdx + 1)
-  const winningBoard = boards[winningBoardsIdxs[winningBoardsIdxs.length - 1]]
   const unmarkedSum = winningBoard.filter(n => !winningNumbers.includes(n)).reduce((total, n) => total + Number(n), 0)
 
   return unmarkedSum * calledNumbers[winningNumberIdx]
