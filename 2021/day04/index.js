@@ -4,24 +4,23 @@ const input = readInput(__dirname).split('\n\n')
 const calledNumbers = input[0].split(',')
 const boards = input.slice(1, input.length).map(board => board.split('\n').join(' ').split(' '))
 
-const partTwo = (nthBoard) => {
+const answer = (nthBoard) => {
   const boardState = []
-
+  const winningBoardsIdxs = []
   let winningNumberIdx
-  const winningBoards = []
 
   calledNumbers.some((calledNum, nIdx) => {
     if (nIdx >= 4) {
       boardState.forEach((board, boardStateIdx) => {
         return Object.values(board).some(total => {
-          if (total === 5 && !winningBoards.includes(boardStateIdx)) {
-            winningNumberIdx = nIdx
-            winningBoards.push(boardStateIdx)
+          if (total === 5 && !winningBoardsIdxs.includes(boardStateIdx)) {
+            winningNumberIdx = nIdx - 1
+            winningBoardsIdxs.push(boardStateIdx)
           }
         })
       })
 
-      if (winningBoards.length === nthBoard) return true
+      if (winningBoardsIdxs.length === nthBoard) return true
     }
 
     boards.forEach((board, boardIdx) => {
@@ -36,16 +35,14 @@ const partTwo = (nthBoard) => {
     })
   })
 
-  const winningNumbers = calledNumbers.slice(0, winningNumberIdx)
-  const winningBoard = boards[winningBoards[winningBoards.length - 1]]
-  const winningBoardUnmarkedSum = winningBoard.filter(n => !winningNumbers.includes(n)).reduce((total, n) => total + Number(n), 0)
+  const winningNumbers = calledNumbers.slice(0, winningNumberIdx + 1)
+  const winningBoard = boards[winningBoardsIdxs[winningBoardsIdxs.length - 1]]
+  const unmarkedSum = winningBoard.filter(n => !winningNumbers.includes(n)).reduce((total, n) => total + Number(n), 0)
 
-  return winningBoardUnmarkedSum * calledNumbers[winningNumberIdx -1]
+  return unmarkedSum * calledNumbers[winningNumberIdx]
 }
 
-const partOneAnswer = partTwo(1) // 14093
-const partTwoAnswer = partTwo(boards.length) // 17388
-console.log('partOneAnswer:', partOneAnswer)
-console.log('partTwoAnswer:', partTwoAnswer)
+console.log(answer(1)) // 14093
+console.log(answer(boards.length)) // 17388
 
 
