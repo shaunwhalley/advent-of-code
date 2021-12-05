@@ -3,9 +3,13 @@ const readInput = require('../readInput')
 const inputs = readInput(__dirname, false).split('\n')
 const posRegEX = new RegExp(/\d+/g)
 
-const partOne = (includeDiagonals) => {
+const answer = (includeDiagonals) => {
+  const overlaps = {}
 
-  const overlaps = []
+  const setOverlap = (x, y) => {
+    const pos = `${x},${y}`
+    overlaps[pos] = (overlaps[pos] || 0) + 1
+  }
 
   inputs.forEach(input => {
     const [startX, startY, endX, endY] = input.match(posRegEX).map(Number)
@@ -14,17 +18,13 @@ const partOne = (includeDiagonals) => {
       const [start, end] = [startX, endX].sort((a, b) => a - b)
 
       for (let n = start; n <= end; n++) {
-        const [x, y] = [n, startY]
-        if (!overlaps[y]) overlaps[y] = []
-        overlaps[y][x] = (overlaps[y][x] || 0) + 1
+        setOverlap(n, startY)
       }
     } else if (startX === endX) {
       const [start, end] = [startY, endY].sort((a, b) => a - b)
 
       for (let n = start; n <= end; n++) {
-        const [x, y] = [startX, n]
-        if (!overlaps[y]) overlaps[y] = []
-        overlaps[y][x] = (overlaps[y][x] || 0) + 1
+        setOverlap(startX, n)
       }
     } else if (includeDiagonals) {
       const diff = Math.abs(startX - endX)
@@ -32,14 +32,14 @@ const partOne = (includeDiagonals) => {
       for (let n = 0; n <= diff; n++) {
         const x = startX > endX ? startX - n : startX + n
         const y = startY > endY ? startY - n : startY + n
-        if (!overlaps[y]) overlaps[y] = []
-        overlaps[y][x] = (overlaps[y][x] || 0) + 1
+
+        setOverlap(x, y)
       }
     }
   })
 
-  return overlaps.flat().reduce((total, overlapTotal) => overlapTotal >= 2 ? total + 1 : total, 0)
+  return Object.values(overlaps).reduce((total, overlapTotal) => overlapTotal >= 2 ? total + 1 : total, 0)
 }
 
-console.log(partOne()) // 7644
-console.log(partOne(true)) // 12
+console.log(answer()) // 7644
+console.log(answer(true)) // 18627
