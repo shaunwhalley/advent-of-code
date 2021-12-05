@@ -13,20 +13,11 @@ const answer = (includeDiagonals) => {
 
   inputs.forEach(input => {
     const [startX, startY, endX, endY] = input.match(posRegEX).map(Number)
+    const isDiagonal = Boolean(startY !== endY && startX !== endX)
 
-    if (startY === endY) {
-      const [start, end] = [startX, endX].sort((a, b) => a - b)
+    if (isDiagonal) {
+      if (!includeDiagonals) return
 
-      for (let n = start; n <= end; n++) {
-        setOverlap(n, startY)
-      }
-    } else if (startX === endX) {
-      const [start, end] = [startY, endY].sort((a, b) => a - b)
-
-      for (let n = start; n <= end; n++) {
-        setOverlap(startX, n)
-      }
-    } else if (includeDiagonals) {
       const diff = Math.abs(startX - endX)
 
       for (let n = 0; n <= diff; n++) {
@@ -35,6 +26,15 @@ const answer = (includeDiagonals) => {
 
         setOverlap(x, y)
       }
+
+      return
+    }
+
+    const isVertical = startX === endX
+    const [start, end] = (isVertical ? [startY, endY] : [startX, endX]).sort((a, b) => a - b)
+
+    for (let n = start; n <= end; n++) {
+      isVertical ? setOverlap(startX, n) : setOverlap(n, startY)
     }
   })
 
