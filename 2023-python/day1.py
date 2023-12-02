@@ -1,26 +1,20 @@
 import re
 
-partOneAnswer=0
+validTypedNumbers = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+partOneRegex = '[0-9]'
+partTwoRegex = '(?=([0-9]|' + '|'.join(validTypedNumbers) + '))'
 
-with open('day1-input.txt') as input:
- for line in input:
-  numbers = re.findall('[0-9]', line)
-  partOneAnswer += int(numbers[0] + numbers[-1])
+def get_answer(inputFilePath, regex):
+  total = 0
 
-# 52974
-print(partOneAnswer)
+  with open(inputFilePath) as input:
+    for line in input:
+      numbers = re.findall(regex, line)
+      firstNumber = str(validTypedNumbers.index(numbers[0]) + 1) if numbers[0] in validTypedNumbers else numbers[0]
+      lastNumber = str(validTypedNumbers.index(numbers[-1]) + 1) if numbers[-1] in validTypedNumbers else numbers[-1]
+      total += int(firstNumber + lastNumber)
 
-partTwoAnswer=0
+  return total
 
-with open('day1-input.txt') as input:
- for line in input:
-  validTypedNumbers = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-  regex = '(?=([0-9]|' + '|'.join(validTypedNumbers) + '))'
-  numbers = re.findall(regex, line)
-  firstNumber = str(validTypedNumbers.index(numbers[0]) + 1) if numbers[0] in validTypedNumbers else numbers[0]
-  lastNumber = str(validTypedNumbers.index(numbers[-1]) + 1) if numbers[-1] in validTypedNumbers else numbers[-1]
-
-  partTwoAnswer += int(firstNumber + lastNumber)
-
-# 53340
-print(partTwoAnswer)
+print(get_answer('day1-input.txt', partOneRegex))
+print(get_answer('day1-input.txt', partTwoRegex))
