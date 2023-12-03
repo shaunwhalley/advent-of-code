@@ -18,7 +18,7 @@ def get_answer(inputFilePath):
 
         cube_pulls_possible.append(number <= config[cubes[2]])
 
-        if colour in minimums and minimums[colour]:
+        if minimums[colour]:
           if number > minimums[colour]:
             minimums[colour] = number
         else:
