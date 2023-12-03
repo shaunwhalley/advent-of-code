@@ -1,6 +1,6 @@
 import re
 
-def get_answer(inputFilePath):
+def get_answers(inputFilePath):
   config = { 'red': 12, 'green': 13, 'blue': 14 }
   partOneTotal=0
   partTwoTotal=0
@@ -32,4 +32,4 @@ def get_answer(inputFilePath):
   return partOneTotal, partTwoTotal
 
 # 3099, 72970
-print(get_answer('day2-input.txt'))
+print(get_answers('day2-input.txt'))
