@@ -23,8 +23,6 @@ def get_answers(inputFilePath):
           if contains_special_char(current_row) or contains_special_char(previous_row) or contains_special_char(next_row):
             print(previous_row, current_row, next_row)
             part_one_total += int(match.group())
-          # else:
-          #   print(match.group())
 
   print('total', part_one_total)
 
